@@ -1,16 +1,13 @@
-"""Backward-compatible entry point. Use `python -m frank` instead."""
-from frank.__main__ import *  # noqa: F401,F403
+import sys
+import time
+import traceback
+
+from frank.cli import main
+from frank.colors import c
+
+POLL_INTERVAL = 30
 
 if __name__ == "__main__":
-    import sys
-    import time
-    import traceback
-
-    from frank.cli import main
-    from frank.colors import c
-
-    POLL_INTERVAL = 30
-
     print(c("cyan", f"[frank] Starting polling loop (every {POLL_INTERVAL}s). Press Ctrl+C to stop."))
     while True:
         try:
