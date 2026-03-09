@@ -1,0 +1,125 @@
+{
+  "type": "system",
+  "subtype": "init",
+  "cwd": "/Users/ricardobc/Desktop/projects/catalog",
+  "session_id": "7e650fa6-acf8-48cd-8832-97b3498ad33a",
+  "tools": [
+    "Task",
+    "TaskOutput",
+    "Bash",
+    "Glob",
+    "Grep",
+    "ExitPlanMode",
+    "Read",
+    "Edit",
+    "Write",
+    "NotebookEdit",
+    "WebFetch",
+    "TodoWrite",
+    "WebSearch",
+    "TaskStop",
+    "AskUserQuestion",
+    "Skill",
+    "EnterPlanMode",
+    "EnterWorktree",
+    "ToolSearch"
+  ],
+  "mcp_servers": [
+    {
+      "name": "jetbrains",
+      "status": "failed"
+    },
+    {
+      "name": "claude.ai Notion",
+      "status": "needs-auth"
+    },
+    {
+      "name": "claude.ai monday.com",
+      "status": "needs-auth"
+    },
+    {
+      "name": "claude.ai Linear",
+      "status": "needs-auth"
+    },
+    {
+      "name": "claude.ai Intercom",
+      "status": "needs-auth"
+    },
+    {
+      "name": "claude.ai HubSpot",
+      "status": "needs-auth"
+    },
+    {
+      "name": "claude.ai Figma",
+      "status": "needs-auth"
+    },
+    {
+      "name": "claude.ai Canva",
+      "status": "needs-auth"
+    },
+    {
+      "name": "claude.ai Box",
+      "status": "needs-auth"
+    },
+    {
+      "name": "claude.ai Atlassian",
+      "status": "needs-auth"
+    },
+    {
+      "name": "claude.ai Asana",
+      "status": "needs-auth"
+    }
+  ],
+  "model": "claude-opus-4-6",
+  "permissionMode": "acceptEdits",
+  "slash_commands": [
+    "keybindings-help",
+    "debug",
+    "simplify",
+    "batch",
+    "claude-api",
+    "compact",
+    "context",
+    "cost",
+    "init",
+    "pr-comments",
+    "release-notes",
+    "review",
+    "security-review",
+    "extra-usage",
+    "insights"
+  ],
+  "apiKeySource": "none",
+  "claude_code_version": "2.1.70",
+  "output_style": "default",
+  "agents": [
+    "general-purpose",
+    "statusline-setup",
+    "Explore",
+    "Plan",
+    "code-simplifier:code-simplifier",
+    "backend-csharp-plugin:code-reviewer",
+    "backend-csharp-plugin:architect-task-planner",
+    "backend-csharp-plugin:developer",
+    "backend-csharp-plugin:queue-topic-document-reviewer"
+  ],
+  "skills": [
+    "keybindings-help",
+    "debug",
+    "simplify",
+    "batch",
+    "claude-api"
+  ],
+  "plugins": [
+    {
+      "name": "code-simplifier",
+      "path": "/Users/ricardobc/.claude/plugins/cache/claude-plugins-official/code-simplifier/1.0.0"
+    },
+    {
+      "name": "backend-csharp-plugin",
+      "path": "/Users/ricardobc/.claude/plugins/cache/guild-hall-marketplace/backend-csharp-plugin/0.2.0"
+    }
+  ],
+  "uuid": "34c64b0c-92a7-4247-8491-0a13d62e62ae",
+  "fast_mode_state": "off"
+}

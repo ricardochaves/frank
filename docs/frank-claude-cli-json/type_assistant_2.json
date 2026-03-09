@@ -1,0 +1,38 @@
+{
+  "type": "assistant",
+  "message": {
+    "model": "claude-opus-4-6",
+    "id": "msg_011JE5fKjncCBDwupdkmLPiC",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      {
+        "type": "tool_use",
+        "id": "toolu_01MirwNXk43N5pnVLsnZMHJ3",
+        "name": "Edit",
+        "input": {
+          "replace_all": false,
+          "file_path": "/Users/ricardobc/Desktop/projects/onsen/gunicorn_config.py",
+          "old_string": "import json\nimport os",
+          "new_string": "# Hi\nimport json\nimport os"
+        },
+        "caller": { "type": "direct" }
+      }
+    ],
+    "stop_reason": null,
+    "stop_sequence": null,
+    "usage": {
+      "input_tokens": 3,
+      "cache_creation_input_tokens": 31203,
+      "cache_read_input_tokens": 0,
+      "cache_creation": { "ephemeral_5m_input_tokens": 0, "ephemeral_1h_input_tokens": 31203 },
+      "output_tokens": 11,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "cabad4b0-da0f-45e8-ada4-d192941bd338",
+  "uuid": "45864506-6bb1-43da-910b-4d0d23ab4bae"
+}

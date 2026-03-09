@@ -1,0 +1,31 @@
+{
+  "type": "assistant",
+  "message": {
+    "model": "claude-opus-4-6",
+    "id": "msg_011JE5fKjncCBDwupdkmLPiC",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      {
+        "type": "thinking",
+        "thinking": "The user wants me to add a comment \"# Hi\" as the first line of gunicorn_config.py and return only a JSON response.",
+        "signature": "EpsCCkYICxgCKkBMuduuAXfozNoNzBkpkxjTNCEqKUvFoNBQf+IQCTPiSNJrVItOFVAqKR+Gx6Ds3bMEpWFYGBKgvkZrr5EG+1CHEgwv+wyI4Af3sx8r2N4aDG2tFWNBAzWrvpYMwSIwyob2NZKSob3/q88Lajwpg2373KMJlBB/TABE0YWzZgVM3jvxqoHhkAe5P5U08MjRKoIBMuqSzbpa3navXd2K+AQaEfRmf850+jwTH5axCmE/Aq5/ju9PhTVGtkItwbZy0T1ffjHnHJW+xpnHMJ6jPlYO7UO5G1Qvs0oSohwZesRH5VXFYfjhLjaC7IWsiG1l7JwWWB603s+rFAaCFU10fFFDBuLOiMl6q2b65DvGXflaVs3IcRgB"
+      }
+    ],
+    "stop_reason": null,
+    "stop_sequence": null,
+    "usage": {
+      "input_tokens": 3,
+      "cache_creation_input_tokens": 31203,
+      "cache_read_input_tokens": 0,
+      "cache_creation": { "ephemeral_5m_input_tokens": 0, "ephemeral_1h_input_tokens": 31203 },
+      "output_tokens": 11,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "cabad4b0-da0f-45e8-ada4-d192941bd338",
+  "uuid": "2a104c25-4748-407a-bfb1-3572a579025a"
+}

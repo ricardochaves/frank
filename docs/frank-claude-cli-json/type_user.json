@@ -1,0 +1,33 @@
+{
+  "type": "user",
+  "message": {
+    "role": "user",
+    "content": [
+      {
+        "tool_use_id": "toolu_01MirwNXk43N5pnVLsnZMHJ3",
+        "type": "tool_result",
+        "content": "The file /Users/ricardobc/Desktop/projects/onsen/gunicorn_config.py has been updated successfully."
+      }
+    ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "cabad4b0-da0f-45e8-ada4-d192941bd338",
+  "uuid": "f5883cc7-fd60-41e9-903e-9700bea7f820",
+  "tool_use_result": {
+    "filePath": "/Users/ricardobc/Desktop/projects/onsen/gunicorn_config.py",
+    "oldString": "import json\nimport os",
+    "newString": "# Hi\nimport json\nimport os",
+    "originalFile": "import json\nimport os\n\nfrom pythonjsonlogger.jsonlogger import JsonFormatter\n\nbind = os.environ.get(\"DJANGO_BIND_ADDRESS\", \"0.0.0.0\") + \":\" + os.environ.get(\"DJANGO_BIND_PORT\", \"8000\")\nbacklog = int(os.getenv(\"GUNICORN_BACKLOG\", \"2048\"))\nworkers = int(os.getenv(\"GUNICORN_WORKERS\", \"1\"))\nworker_class = os.getenv(\"GUNICORN_WORKER_CLASS\", \"sync\")\nworker_connections = int(os.getenv(\"GUNICORN_WORKER_CONNECTIONS\", \"50\"))\ntimeout = int(os.getenv(\"GUNICORN_TIMEOUT\", \"300\"))\nkeepalive = int(os.getenv(\"GUNICORN_KEEPALIVE\", \"2\"))\nthreads = int(os.getenv(\"GUNICORN_THREADS\", \"1\"))\nmax_requests = int(os.getenv(\"GUNICORN_MAX_REQUESTS\", \"0\"))\nmax_requests_jitter = int(os.getenv(\"GUNICORN_MAX_REQUESTS_JITTER\", \"0\"))\ngraceful_timeout = int(os.getenv(\"GUNICORN_GRACEFUL_TIMEOUT\", \"30\"))\n\n\nclass CustomJsonFormatter(JsonFormatter):\n    def format(self, record):\n        \"\"\"Formats a log record and serializes to json\"\"\"\n        try:\n            if getattr(record, \"otelSpanID\", 0) != 0:\n                del record.otelSpanID\n            if getattr(record, \"otelTraceID\", 0) != 0:\n                del record.otelTraceID\n            record.msg = json.loads(record.getMessage())\n        except json.JSONDecodeError:\n            pass\n\n        return super().format(record)\n\n\nlogconfig_dict = {\n    \"version\": 1,\n    \"disable_existing_loggers\": False,\n    \"formatters\": {\n        \"standard\": {\n            \"()\": CustomJsonFormatter,\n            \"format\": \"%(levelname)-8s [%(asctime)s] [%(request_id)s] %(name)s: %(message)s\",\n        }\n    },\n    \"handlers\": {\n        \"console\": {\"class\": \"logging.StreamHandler\", \"formatter\": \"standard\"},\n        \"error_console\": {\"class\": \"logging.StreamHandler\", \"formatter\": \"standard\"},\n    },\n    \"loggers\": {\n        \"gunicorn.error\": {\"handlers\": [\"error_console\"], \"level\": \"INFO\", \"propagate\": False},\n        \"gunicorn.access\": {\"handlers\": [\"console\"], \"level\": \"INFO\", \"propagate\": False},\n        # separate logger for custom timeout\n        \"gunicorn.timeout\": {\n            \"handlers\": [\"console\"],\n            \"level\": os.getenv(\"GUNICORN_TIMEOUT_LOG_LEVEL\", \"INFO\").upper(),\n            \"propagate\": False,\n        },\n    },\n}\n\n# Using `lower` because Gunicorn's documentation explicitly recommends it\n# https://docs.gunicorn.org/en/stable/settings.html#access-log-format\nip_address_header = os.getenv(\"GUNICORN_IP_ADDRESS_HEADER\", \"x-original-forwarded-for\").lower()\nrequest_id_header = os.getenv(\"GUNICORN_REQUEST_ID_HEADER\", \"http_x_request_id\").lower()\nspan_id = os.getenv(\"OPENTELEMETRY_SPANID_HEADER\", \"span_id\").lower()\ntrace_id = os.getenv(\"OPENTELEMETRY_TRACEID_HEADER\", \"trace_id\").lower()\n\nerrorlog = \"-\"\nloglevel = os.getenv(\"GUNICORN_LOG_LEVEL\", \"info\")\naccesslog = \"-\"\naccess_log_format = (\n    f'{{\"message\": \"%(r)s\", \"request_id\": \"%({{{request_id_header}}}o)s\", '\n    f'\"http_status\": %(s)s, \"ip_address\": \"%({{{ip_address_header}}}i)s\", '\n    f'\"trace_id\": \"%({{{trace_id}}}o)s\", \"span_id\": \"%({{{span_id}}}o)s\", '\n    f'\"response_length\": \"%(b)s\", \"referer\": \"%(f)s\", \"user_agent\": \"%(a)s\", '\n    f'\"request_time\": %(L)s, \"date\": \"%(t)s\"}}'\n)\n",
+    "structuredPatch": [
+      {
+        "oldStart": 1,
+        "oldLines": 3,
+        "newStart": 1,
+        "newLines": 4,
+        "lines": ["+# Hi", " import json", " import os", " "]
+      }
+    ],
+    "userModified": false,
+    "replaceAll": false
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "type": "result",
+  "subtype": "success",
+  "is_error": false,
+  "duration_ms": 19733,
+  "duration_api_ms": 15984,
+  "num_turns": 2,
+  "result": "{\"success\": true, \"message\": \"Added comment '# Hi' as the first line of gunicorn_config.py\"}",
+  "stop_reason": null,
+  "session_id": "cabad4b0-da0f-45e8-ada4-d192941bd338",
+  "total_cost_usd": 0.25549684999999994,
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 31433,
+    "cache_read_input_tokens": 31203,
+    "output_tokens": 201,
+    "server_tool_use": { "web_search_requests": 0, "web_fetch_requests": 0 },
+    "service_tier": "standard",
+    "cache_creation": { "ephemeral_1h_input_tokens": 31433, "ephemeral_5m_input_tokens": 0 },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "modelUsage": {
+    "claude-opus-4-6": {
+      "inputTokens": 4,
+      "outputTokens": 201,
+      "cacheReadInputTokens": 31203,
+      "cacheCreationInputTokens": 31433,
+      "webSearchRequests": 0,
+      "costUSD": 0.21710275,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    },
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 1648,
+      "outputTokens": 1020,
+      "cacheReadInputTokens": 56361,
+      "cacheCreationInputTokens": 20808,
+      "webSearchRequests": 0,
+      "costUSD": 0.0383941,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    }
+  },
+  "permission_denials": [],
+  "uuid": "8d6481d5-935d-4139-a62c-5591fe6e14fe"
+}

@@ -1,0 +1,121 @@
+{
+  "type": "system",
+  "subtype": "init",
+  "cwd": "/Users/ricardobc/Desktop/projects/onsen",
+  "session_id": "cabad4b0-da0f-45e8-ada4-d192941bd338",
+  "tools": [
+    "Task",
+    "TaskOutput",
+    "Bash",
+    "Glob",
+    "Grep",
+    "ExitPlanMode",
+    "Read",
+    "Edit",
+    "Write",
+    "NotebookEdit",
+    "WebFetch",
+    "TodoWrite",
+    "WebSearch",
+    "TaskStop",
+    "AskUserQuestion",
+    "Skill",
+    "EnterPlanMode",
+    "EnterWorktree",
+    "ToolSearch",
+    "mcp__playwright__browser_close",
+    "mcp__playwright__browser_resize",
+    "mcp__playwright__browser_console_messages",
+    "mcp__playwright__browser_handle_dialog",
+    "mcp__playwright__browser_evaluate",
+    "mcp__playwright__browser_file_upload",
+    "mcp__playwright__browser_fill_form",
+    "mcp__playwright__browser_install",
+    "mcp__playwright__browser_press_key",
+    "mcp__playwright__browser_type",
+    "mcp__playwright__browser_navigate",
+    "mcp__playwright__browser_navigate_back",
+    "mcp__playwright__browser_network_requests",
+    "mcp__playwright__browser_run_code",
+    "mcp__playwright__browser_take_screenshot",
+    "mcp__playwright__browser_snapshot",
+    "mcp__playwright__browser_click",
+    "mcp__playwright__browser_drag",
+    "mcp__playwright__browser_hover",
+    "mcp__playwright__browser_select_option",
+    "mcp__playwright__browser_tabs",
+    "mcp__playwright__browser_wait_for"
+  ],
+  "mcp_servers": [
+    {
+      "name": "claude.ai monday.com",
+      "status": "disabled"
+    },
+    {
+      "name": "jetbrains",
+      "status": "disabled"
+    },
+    {
+      "name": "mui-mcp",
+      "status": "disabled"
+    },
+    {
+      "name": "claude.ai Google Calendar",
+      "status": "needs-auth"
+    },
+    {
+      "name": "claude.ai Gmail",
+      "status": "needs-auth"
+    },
+    {
+      "name": "playwright",
+      "status": "connected"
+    }
+  ],
+  "model": "claude-opus-4-6",
+  "permissionMode": "acceptEdits",
+  "slash_commands": [
+    "keybindings-help",
+    "debug",
+    "frontend-design",
+    "ralph-loop:help",
+    "ralph-loop:cancel-ralph",
+    "ralph-loop:ralph-loop",
+    "compact",
+    "context",
+    "cost",
+    "init",
+    "pr-comments",
+    "release-notes",
+    "review",
+    "security-review",
+    "extra-usage",
+    "insights"
+  ],
+  "apiKeySource": "none",
+  "claude_code_version": "2.1.56",
+  "output_style": "default",
+  "agents": [
+    "general-purpose",
+    "statusline-setup",
+    "Explore",
+    "Plan",
+    "code-simplifier:code-simplifier",
+    "google-ads-updater",
+    "git-diff-code-reviewer",
+    "taskdoc-master"
+  ],
+  "skills": ["keybindings-help", "debug", "frontend-design"],
+  "plugins": [
+    {
+      "name": "code-simplifier",
+      "path": "/Users/ricardobc/.claude/plugins/cache/claude-plugins-official/code-simplifier/1.0.0"
+    },
+    {
+      "name": "ralph-loop",
+      "path": "/Users/ricardobc/.claude/plugins/cache/claude-plugins-official/ralph-loop/55b58ec6e564"
+    }
+  ],
+  "uuid": "0ec5dd81-1d9c-43b6-a3ca-9996fcb67bb1",
+  "fast_mode_state": "off"
+}
