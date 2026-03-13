@@ -4,7 +4,7 @@ import subprocess
 from frank.colors import c
 
 
-def generate_task_description(task_text: str) -> str:
+def generate_task_description(task_text: str, cwd: str | None = None) -> str:
     """Get the git diff and call Claude Haiku to generate a task description."""
     print(c("cyan", "[frank] Generating task description..."))
 
@@ -12,6 +12,7 @@ def generate_task_description(task_text: str) -> str:
         ["git", "diff", "HEAD"],
         capture_output=True,
         text=True,
+        cwd=cwd,
     )
     diff = diff_result.stdout.strip()
 
@@ -33,8 +34,7 @@ def generate_task_description(task_text: str) -> str:
         prompt,
         "--model",
         "claude-haiku-4-5-20251001",
-        "--permission-mode",
-        "acceptEdits",
+        "--dangerously-skip-permissions",
         "--output-format",
         "text",
     ]
@@ -70,8 +70,7 @@ def generate_branch_name(task_text: str) -> str:
         prompt,
         "--model",
         "claude-haiku-4-5-20251001",
-        "--permission-mode",
-        "acceptEdits",
+        "--dangerously-skip-permissions",
         "--output-format",
         "text",
     ]
@@ -84,21 +83,23 @@ def generate_branch_name(task_text: str) -> str:
     return branch
 
 
-def create_branch(branch_name: str) -> bool:
+def create_branch(branch_name: str, cwd: str | None = None) -> bool:
     """Create and checkout a git branch from main, or switch to it if it already exists."""
-    subprocess.run(["git", "checkout", "main"], capture_output=True, text=True)
-    subprocess.run(["git", "pull", "--ff-only"], capture_output=True, text=True)
+    subprocess.run(["git", "checkout", "main"], capture_output=True, text=True, cwd=cwd)
+    subprocess.run(["git", "pull", "--ff-only"], capture_output=True, text=True, cwd=cwd)
 
     result = subprocess.run(
         ["git", "checkout", "-b", branch_name],
         capture_output=True,
         text=True,
+        cwd=cwd,
     )
     if result.returncode != 0:
         result = subprocess.run(
             ["git", "checkout", branch_name],
             capture_output=True,
             text=True,
+            cwd=cwd,
         )
         if result.returncode != 0:
             print(c("red", f"[frank] Failed to create/switch branch: {result.stderr.strip()}"))
@@ -109,13 +110,14 @@ def create_branch(branch_name: str) -> bool:
     return True
 
 
-def generate_commit_message(task_text: str) -> str:
+def generate_commit_message(task_text: str, cwd: str | None = None) -> str:
     """Use Claude Haiku to generate a conventional commit message from staged changes."""
     print(c("cyan", "[frank] Generating commit message..."))
     diff_result = subprocess.run(
         ["git", "diff", "--staged"],
         capture_output=True,
         text=True,
+        cwd=cwd,
     )
     diff = diff_result.stdout.strip()
     if not diff:
@@ -138,8 +140,7 @@ def generate_commit_message(task_text: str) -> str:
         prompt,
         "--model",
         "claude-haiku-4-5-20251001",
-        "--permission-mode",
-        "acceptEdits",
+        "--dangerously-skip-permissions",
         "--output-format",
         "text",
     ]
@@ -150,26 +151,28 @@ def generate_commit_message(task_text: str) -> str:
     return msg
 
 
-def commit_and_push(branch_name: str, task_text: str) -> bool:
+def commit_and_push(branch_name: str, task_text: str, cwd: str | None = None) -> bool:
     """Stage all changes, generate commit message, commit, and push."""
     print(c("cyan", "[frank] Committing and pushing changes..."))
 
-    subprocess.run(["git", "add", "."], capture_output=True, text=True)
+    subprocess.run(["git", "add", "."], capture_output=True, text=True, cwd=cwd)
 
     status = subprocess.run(
         ["git", "diff", "--staged", "--quiet"],
         capture_output=True,
         text=True,
+        cwd=cwd,
     )
     if status.returncode == 0:
         print(c("yellow", "[frank] No changes to commit."))
         return False
 
-    commit_msg = generate_commit_message(task_text)
+    commit_msg = generate_commit_message(task_text, cwd=cwd)
     result = subprocess.run(
         ["git", "commit", "-m", commit_msg],
         capture_output=True,
         text=True,
+        cwd=cwd,
     )
     if result.returncode != 0:
         print(c("red", f"[frank] Failed to commit: {result.stderr.strip()}"))
@@ -180,6 +183,7 @@ def commit_and_push(branch_name: str, task_text: str) -> bool:
         ["git", "push", "-u", "origin", branch_name],
         capture_output=True,
         text=True,
+        cwd=cwd,
     )
     if result.returncode != 0:
         print(c("red", f"[frank] Failed to push: {result.stderr.strip()}"))
@@ -188,17 +192,18 @@ def commit_and_push(branch_name: str, task_text: str) -> bool:
     return True
 
 
-def create_pull_request(task_text: str) -> str | None:
+def create_pull_request(task_text: str, cwd: str | None = None) -> str | None:
     """Create a GitHub PR using gh CLI. Returns the PR URL or None."""
     print(c("cyan", "[frank] Creating pull request..."))
 
     pr_title = _generate_pr_title(task_text)
-    pr_body = _generate_pr_description(task_text)
+    pr_body = _generate_pr_description(task_text, cwd=cwd)
 
     result = subprocess.run(
         ["gh", "pr", "create", "--title", pr_title, "--body", pr_body],
         capture_output=True,
         text=True,
+        cwd=cwd,
     )
     if result.returncode != 0:
         print(c("red", f"[frank] Failed to create PR: {result.stderr.strip()}"))
@@ -224,8 +229,7 @@ def _generate_pr_title(task_text: str) -> str:
         prompt,
         "--model",
         "claude-haiku-4-5-20251001",
-        "--permission-mode",
-        "acceptEdits",
+        "--dangerously-skip-permissions",
         "--output-format",
         "text",
     ]
@@ -236,11 +240,12 @@ def _generate_pr_title(task_text: str) -> str:
     return title[:70]
 
 
-def _generate_pr_description(task_text: str) -> str:
+def _generate_pr_description(task_text: str, cwd: str | None = None) -> str:
     diff_result = subprocess.run(
         ["git", "diff", "main...HEAD"],
         capture_output=True,
         text=True,
+        cwd=cwd,
     )
     diff = diff_result.stdout.strip()
 
@@ -261,8 +266,7 @@ def _generate_pr_description(task_text: str) -> str:
         prompt,
         "--model",
         "claude-haiku-4-5-20251001",
-        "--permission-mode",
-        "acceptEdits",
+        "--dangerously-skip-permissions",
         "--output-format",
         "text",
     ]

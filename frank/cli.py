@@ -11,6 +11,7 @@ from frank.git import (
     generate_branch_name,
     generate_task_description,
 )
+from frank.repo import ensure_clone, load_repos, resolve_repo
 from frank.runners import run_integration_tests, run_lint_formatter
 from frank.tasks import get_task_source
 
@@ -31,7 +32,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--source",
-        choices=["slack", "monday"],
+        choices=["slack", "monday", "file"],
         default="slack",
         help="Task source to use (default: slack)",
     )
@@ -40,22 +41,39 @@ def main() -> None:
     max_fix_attempts = args.max_attempts
     source = get_task_source(args.source)
 
-    for task in source.get_tasks():
-        branch_name = generate_branch_name(task.text)
-        if not create_branch(branch_name):
-            print(c("red", "[frank] Cannot proceed without a clean branch. Exiting."))
-            sys.exit(1)
+    repos = load_repos()
 
-        result = execute_claude(task.text, verbose=args.verbose)
+    for task in source.get_tasks():
+        # Resolve which repo this task belongs to
+        repo = resolve_repo(task.text, repos)
+        if repo is None:
+            print(c("yellow", f"[frank] Could not determine repo for task: {task.text[:60]}"))
+            source.reply(task, "Não consegui identificar o repositório para essa tarefa.")
+            continue
+
+        # Clone or update the repo
+        try:
+            repo_path = ensure_clone(repo)
+        except RuntimeError as e:
+            print(c("red", f"[frank] {e}"))
+            source.reply(task, f"Erro ao clonar repositório: {repo}")
+            continue
+
+        branch_name = generate_branch_name(task.text)
+        if not create_branch(branch_name, cwd=repo_path):
+            print(c("red", "[frank] Cannot proceed without a clean branch. Skipping task."))
+            continue
+
+        result = execute_claude(task.text, verbose=args.verbose, cwd=repo_path)
 
         if not result["success"]:
-            subprocess.run(["git", "checkout", "main"], capture_output=True, text=True)
+            subprocess.run(["git", "checkout", "main"], capture_output=True, text=True, cwd=repo_path)
             continue
 
         task_complete = False
 
         for attempt in range(1, max_fix_attempts + 1):
-            exit_code, test_output = run_integration_tests(verbose=args.verbose)
+            exit_code, test_output = run_integration_tests(verbose=args.verbose, cwd=repo_path)
 
             if exit_code != 0:
                 print(
@@ -69,12 +87,13 @@ def main() -> None:
                     fix_task,
                     session_id=result["session_id"],
                     verbose=args.verbose,
+                    cwd=repo_path,
                 )
                 continue
 
             print(c("green", "[frank] Integration tests passed."))
 
-            lint_exit_code, lint_output = run_lint_formatter(verbose=args.verbose)
+            lint_exit_code, lint_output = run_lint_formatter(verbose=args.verbose, cwd=repo_path)
 
             if lint_exit_code == 0:
                 print(c("green", "[frank] Lint-formatter passed. Task complete."))
@@ -92,16 +111,17 @@ def main() -> None:
                 fix_task,
                 session_id=result["session_id"],
                 verbose=args.verbose,
+                cwd=repo_path,
             )
         else:
             print(c("red", f"[frank] Still failing after {max_fix_attempts} attempts. Moving on."))
 
         if task_complete:
-            description = generate_task_description(task.text)
+            description = generate_task_description(task.text, cwd=repo_path)
 
             pr_url = None
-            if commit_and_push(branch_name, task.text):
-                pr_url = create_pull_request(task.text)
+            if commit_and_push(branch_name, task.text, cwd=repo_path):
+                pr_url = create_pull_request(task.text, cwd=repo_path)
 
             print(c("cyan", "[frank] Marking task as done..."))
             source.mark_done(task)
@@ -114,7 +134,7 @@ def main() -> None:
             print(c("green", "[frank] Reply posted."))
 
             print(c("cyan", "[frank] Switching back to main branch..."))
-            subprocess.run(["git", "checkout", "main"], capture_output=True, text=True)
+            subprocess.run(["git", "checkout", "main"], capture_output=True, text=True, cwd=repo_path)
             print(c("green", f"[frank] Task complete: {task.text[:60]}"))
         else:
-            subprocess.run(["git", "checkout", "main"], capture_output=True, text=True)
+            subprocess.run(["git", "checkout", "main"], capture_output=True, text=True, cwd=repo_path)

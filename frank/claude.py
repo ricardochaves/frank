@@ -20,7 +20,7 @@ We need tha you result can be load as a json in python: json.loads(employee_stri
     """
 
 
-def execute_claude(task: str, session_id: str | None = None, verbose: bool = False) -> dict:
+def execute_claude(task: str, session_id: str | None = None, verbose: bool = False, cwd: str | None = None) -> dict:
     prompt = main_prompt()
     user_prompt = task + "\n" + prompt
 
@@ -30,8 +30,7 @@ def execute_claude(task: str, session_id: str | None = None, verbose: bool = Fal
         user_prompt,
         "--output-format",
         "stream-json",
-        "--permission-mode",
-        "acceptEdits",
+        "--dangerously-skip-permissions",
         "--verbose",
     ]
 
@@ -40,7 +39,7 @@ def execute_claude(task: str, session_id: str | None = None, verbose: bool = Fal
 
     result = {"success": False, "session_id": None}
 
-    with subprocess.Popen(cmd, stdout=subprocess.PIPE, text=True) as p:
+    with subprocess.Popen(cmd, stdout=subprocess.PIPE, text=True, cwd=cwd) as p:
         for line in p.stdout:
             if verbose:
                 print(line, end="")
