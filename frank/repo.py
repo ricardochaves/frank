@@ -97,7 +97,7 @@ def _repo_to_local_path(repo: str, workspace_dir: str) -> str:
     return os.path.join(workspace_dir, name)
 
 
-def ensure_clone(repo: str, workspace_dir: str | None = None) -> str:
+def ensure_clone(repo: str, workspace_dir: str | None = None, base_branch: str = "main") -> str:
     """Clone or update a repo. Returns absolute path to the local clone."""
     workspace = workspace_dir or os.environ.get("FRANK_WORKSPACE_DIR", DEFAULT_WORKSPACE_DIR)
     local_path = _repo_to_local_path(repo, workspace)
@@ -106,7 +106,7 @@ def ensure_clone(repo: str, workspace_dir: str | None = None) -> str:
     if os.path.isdir(os.path.join(local_path, ".git")):
         print(c("cyan", f"[frank] Updating existing clone: {local_path}"))
         subprocess.run(["git", "fetch", "origin"], capture_output=True, text=True, cwd=local_path)
-        subprocess.run(["git", "checkout", "main"], capture_output=True, text=True, cwd=local_path)
+        subprocess.run(["git", "checkout", base_branch], capture_output=True, text=True, cwd=local_path)
         subprocess.run(["git", "pull", "--ff-only"], capture_output=True, text=True, cwd=local_path)
     else:
         print(c("cyan", f"[frank] Cloning {clone_url} into {local_path}..."))

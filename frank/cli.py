@@ -36,9 +36,15 @@ def main() -> None:
         default="slack",
         help="Task source to use (default: slack)",
     )
+    parser.add_argument(
+        "--branch",
+        default="main",
+        help="Base branch to work from and target PRs against (default: main)",
+    )
     args = parser.parse_args()
 
     max_fix_attempts = args.max_attempts
+    base_branch = args.branch
     source = get_task_source(args.source)
 
     repos = load_repos()
@@ -53,21 +59,21 @@ def main() -> None:
 
         # Clone or update the repo
         try:
-            repo_path = ensure_clone(repo)
+            repo_path = ensure_clone(repo, base_branch=base_branch)
         except RuntimeError as e:
             print(c("red", f"[frank] {e}"))
             source.reply(task, f"Erro ao clonar repositório: {repo}")
             continue
 
         branch_name = generate_branch_name(task.text)
-        if not create_branch(branch_name, cwd=repo_path):
+        if not create_branch(branch_name, base_branch=base_branch, cwd=repo_path):
             print(c("red", "[frank] Cannot proceed without a clean branch. Skipping task."))
             continue
 
         result = execute_claude(task.text, verbose=args.verbose, cwd=repo_path)
 
         if not result["success"]:
-            subprocess.run(["git", "checkout", "main"], capture_output=True, text=True, cwd=repo_path)
+            subprocess.run(["git", "checkout", base_branch], capture_output=True, text=True, cwd=repo_path)
             continue
 
         task_complete = False
@@ -121,7 +127,7 @@ def main() -> None:
 
             pr_url = None
             if commit_and_push(branch_name, task.text, cwd=repo_path):
-                pr_url = create_pull_request(task.text, cwd=repo_path)
+                pr_url = create_pull_request(task.text, base_branch=base_branch, cwd=repo_path)
 
             print(c("cyan", "[frank] Marking task as done..."))
             source.mark_done(task)
@@ -133,8 +139,8 @@ def main() -> None:
             source.reply(task, description)
             print(c("green", "[frank] Reply posted."))
 
-            print(c("cyan", "[frank] Switching back to main branch..."))
-            subprocess.run(["git", "checkout", "main"], capture_output=True, text=True, cwd=repo_path)
+            print(c("cyan", f"[frank] Switching back to {base_branch} branch..."))
+            subprocess.run(["git", "checkout", base_branch], capture_output=True, text=True, cwd=repo_path)
             print(c("green", f"[frank] Task complete: {task.text[:60]}"))
         else:
-            subprocess.run(["git", "checkout", "main"], capture_output=True, text=True, cwd=repo_path)
+            subprocess.run(["git", "checkout", base_branch], capture_output=True, text=True, cwd=repo_path)

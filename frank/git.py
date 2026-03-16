@@ -83,9 +83,9 @@ def generate_branch_name(task_text: str) -> str:
     return branch
 
 
-def create_branch(branch_name: str, cwd: str | None = None) -> bool:
-    """Create and checkout a git branch from main, or switch to it if it already exists."""
-    subprocess.run(["git", "checkout", "main"], capture_output=True, text=True, cwd=cwd)
+def create_branch(branch_name: str, base_branch: str = "main", cwd: str | None = None) -> bool:
+    """Create and checkout a git branch from base_branch, or switch to it if it already exists."""
+    subprocess.run(["git", "checkout", base_branch], capture_output=True, text=True, cwd=cwd)
     subprocess.run(["git", "pull", "--ff-only"], capture_output=True, text=True, cwd=cwd)
 
     result = subprocess.run(
@@ -192,15 +192,15 @@ def commit_and_push(branch_name: str, task_text: str, cwd: str | None = None) ->
     return True
 
 
-def create_pull_request(task_text: str, cwd: str | None = None) -> str | None:
+def create_pull_request(task_text: str, base_branch: str = "main", cwd: str | None = None) -> str | None:
     """Create a GitHub PR using gh CLI. Returns the PR URL or None."""
     print(c("cyan", "[frank] Creating pull request..."))
 
     pr_title = _generate_pr_title(task_text)
-    pr_body = _generate_pr_description(task_text, cwd=cwd)
+    pr_body = _generate_pr_description(task_text, base_branch=base_branch, cwd=cwd)
 
     result = subprocess.run(
-        ["gh", "pr", "create", "--title", pr_title, "--body", pr_body],
+        ["gh", "pr", "create", "--base", base_branch, "--title", pr_title, "--body", pr_body],
         capture_output=True,
         text=True,
         cwd=cwd,
@@ -240,9 +240,9 @@ def _generate_pr_title(task_text: str) -> str:
     return title[:70]
 
 
-def _generate_pr_description(task_text: str, cwd: str | None = None) -> str:
+def _generate_pr_description(task_text: str, base_branch: str = "main", cwd: str | None = None) -> str:
     diff_result = subprocess.run(
-        ["git", "diff", "main...HEAD"],
+        ["git", "diff", f"{base_branch}...HEAD"],
         capture_output=True,
         text=True,
         cwd=cwd,
