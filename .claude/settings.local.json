@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__claude_ai_monday_com__get_board_info",
+      "Bash(git add:*)",
+      "Bash(wc -c /Users/ricardobc/Desktop/projects/frank/repos.txt && xxd /Users/ricardobc/Desktop/projects/frank/repos.txt | head -5)"
+    ]
+  }
+}
